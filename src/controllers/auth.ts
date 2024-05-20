@@ -1,12 +1,12 @@
 import { IAuth } from '@types'
 import Elysia, { t } from 'elysia'
 import { Users, db } from '@database'
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { StatusCode } from 'status-code-enum'
 import jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcryptjs'
 
-const authController = (es: Elysia) => {
+export const authController = (es: Elysia) => {
   es.group('/auth', (app) =>
     app
       .get('/health', () => 'Ok')
@@ -45,11 +45,11 @@ const authController = (es: Elysia) => {
           }).text()
 
           const access_token = jwt.sign(tokenPayload, privateKey, {
-            algorithm: 'RS512',
+            algorithm: 'RS256',
             expiresIn: '1h'
           })
           const refresh_token = jwt.sign(tokenPayload, privateKey, {
-            algorithm: 'RS512',
+            algorithm: 'RS256',
             expiresIn: '1d'
           })
 
@@ -104,5 +104,3 @@ const authController = (es: Elysia) => {
 
   return es
 }
-
-export default authController
