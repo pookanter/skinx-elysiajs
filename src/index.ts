@@ -1,16 +1,16 @@
 import { Elysia } from 'elysia'
-import AuthController from './controllers/auth'
+// import AuthController from './controllers/auth'
 import controllers from './controllers'
-import { db } from './database/db'
-import { Users } from './database/schema'
+// import { db } from './database/db'
+// import { Users } from './database/schema'
 
-await db.insert(Users).values({
-  email: 'test@mail.com',
-  password: 'password'
-})
+// await db.insert(Users).values({
+//   email: 'test@mail11.com',
+//   password: 'password'
+// })
 
-const user = await db.query.Users.findFirst()
-console.log(user)
+// const user = await db.query.Users.findFirst()
+// console.log(user)
 
 const app = new Elysia()
   .get('/', () => 'Hello Elysia')

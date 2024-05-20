@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "82d0ec8a-67ee-4aed-a337-963d47ba0027",
+  "id": "cf5b6ecb-45bd-4690-8942-640102834c44",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "users": {
@@ -9,7 +9,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "int unsigned",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -54,7 +54,14 @@
           ]
         }
       },
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "id": {
+          "name": "id",
+          "columns": [
+            "id"
+          ]
+        }
+      }
     }
   },
   "_meta": {
