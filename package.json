@@ -5,9 +5,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
     "db:generate": "bunx drizzle-kit generate",
-    "db:migrate": "bun src/database/migrate.ts",
+    "db:migrate": "bun src/database/migrate.ts"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "bookshelf": "^1.2.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.30.10",
@@ -16,10 +17,13 @@
     "knex": "^3.1.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.9.7",
-    "prisma": "^5.14.0"
+    "prisma": "^5.14.0",
+    "status-code-enum": "^1.0.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/bookshelf": "^1.2.9",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/knex": "^0.16.1",
     "bun-types": "latest",
     "drizzle-kit": "^0.21.2"
