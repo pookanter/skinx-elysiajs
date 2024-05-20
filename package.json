@@ -3,13 +3,26 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bun src/database/migrate.ts",
   },
   "dependencies": {
-    "elysia": "latest"
+    "bookshelf": "^1.2.0",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.30.10",
+    "elysia": "latest",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.9.7",
+    "prisma": "^5.14.0"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@types/bookshelf": "^1.2.9",
+    "@types/knex": "^0.16.1",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.21.2"
   },
   "module": "src/index.js"
 }
