@@ -19,13 +19,21 @@ export const Posts = mysqlTable('posts', {
   id: int('id', { unsigned: true }).primaryKey().autoincrement().unique('id'),
   usersId: int('users_id', { unsigned: true }).references(() => Users.id),
   title: varchar('title', { length: 100 }),
-  context: text('content'),
-  postedAt: timestamp('posted_at').notNull().defaultNow(),
-  postedBy: timestamp('posted_by').$onUpdate(() => new Date())
+  content: text('content'),
+  postedAt: timestamp('posted_at'),
+  postedBy: varchar('posted_by', { length: 50 })
+})
+
+export const PostTags = mysqlTable('post_tags', {
+  id: int('id', { unsigned: true }).primaryKey().autoincrement().unique('id'),
+  postsId: int('posts_id', { unsigned: true }).references(() => Posts.id),
+  tagsId: int('tags_id', { unsigned: true }).references(() => Tags.id),
+  createdAt: timestamp('created_at').notNull().defaultNow()
 })
 
 export const Tags = mysqlTable('tags', {
   id: int('id', { unsigned: true }).primaryKey().autoincrement().unique('id'),
-  postsId: int('posts_id', { unsigned: true }).references(() => Posts.id),
-  name: varchar('name', { length: 50 })
+  name: varchar('name', { length: 50 }),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  createdBy: varchar('created_by', { length: 50 })
 })

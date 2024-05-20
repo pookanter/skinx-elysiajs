@@ -84,13 +84,14 @@ export const authController = (es: Elysia) => {
             throw new Error('Email already exists')
           }
 
-          await db.insert(Users).values({
+          const newUserRes = await db.insert(Users).values({
             email,
             password: await bcrypt.hash(password, 10)
           })
 
           return {
-            message: 'User created'
+            message: 'User created',
+            user_id: newUserRes[0].insertId
           }
         },
         {
