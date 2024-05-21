@@ -1,7 +1,7 @@
 import Elysia, { t } from 'elysia'
 import StatusCode from 'status-code-enum'
-import jwt from 'jsonwebtoken'
 import { IAuth } from '@types'
+import { AuthenService } from './authen-service'
 
 export const authenPlugin = (es: Elysia) => {
   const tokenPayload = {} as IAuth.TokenPayload
@@ -25,14 +25,9 @@ export const authenPlugin = (es: Elysia) => {
           console.log('Unauthorized2')
           return (set.status = 'Unauthorized')
         }
-        const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {
-          type: 'utf8'
-        }).text()
 
         try {
-          const decoded = jwt.verify(token, privateKey, {
-            algorithms: ['RS256']
-          })
+          const decoded = AuthenService.verifyToken(token)
 
           Object.assign(tokenPayload, decoded)
         } catch (err) {

@@ -3,8 +3,7 @@ import Elysia, { t } from 'elysia'
 import { Users, db } from '@database'
 import { eq } from 'drizzle-orm'
 import { StatusCode } from 'status-code-enum'
-import jwt from 'jsonwebtoken'
-import * as bcrypt from 'bcryptjs'
+import { AuthenService } from '@libs/authen-service'
 
 export const authController = (es: Elysia) => {
   es.group('/auth', (app) =>
@@ -30,7 +29,10 @@ export const authController = (es: Elysia) => {
 
           const user = users[0]
 
-          const passwordIsValid = await bcrypt.compare(password, user.password)
+          const passwordIsValid = await AuthenService.comparePassword(
+            password,
+            user.password
+          )
 
           if (!passwordIsValid) {
             throw new Error('Credentials are not valid')
@@ -40,23 +42,7 @@ export const authController = (es: Elysia) => {
             user_id: user.id
           }
 
-          const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {
-            type: 'utf8'
-          }).text()
-
-          const access_token = jwt.sign(tokenPayload, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: process.env.JWT_EXPIRES_IN
-          })
-          const refresh_token = jwt.sign(tokenPayload, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: process.env.JWT_REFRESH_EXPIRES_IN
-          })
-
-          return {
-            access_token,
-            refresh_token
-          }
+          return AuthenService.gerateToken(tokenPayload)
         },
         {
           body: t.Object({
@@ -86,7 +72,7 @@ export const authController = (es: Elysia) => {
 
           const newUserRes = await db.insert(Users).values({
             email,
-            password: await bcrypt.hash(password, 10)
+            password: await AuthenService.hashPassword(password)
           })
 
           return {
@@ -104,17 +90,13 @@ export const authController = (es: Elysia) => {
       .post(
         '/refresh-token',
         async ({ body }) => {
-          let { refresh_token } = body as {
-            refresh_token: string
+          let { refreshToken } = body as {
+            refreshToken: string
           }
-
-          const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {
-            type: 'utf8'
-          }).text()
 
           let decoded: any
           try {
-            decoded = jwt.verify(refresh_token, privateKey)
+            decoded = AuthenService.verifyToken(refreshToken)
           } catch (e) {
             throw new Error('Invalid token')
           }
@@ -123,24 +105,11 @@ export const authController = (es: Elysia) => {
             user_id: decoded.user_id
           }
 
-          const access_token = jwt.sign(tokenPayload, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: '1h'
-          })
-
-          refresh_token = jwt.sign(tokenPayload, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: '1d'
-          })
-
-          return {
-            access_token,
-            refresh_token
-          }
+          return AuthenService.gerateToken(tokenPayload)
         },
         {
           body: t.Object({
-            refresh_token: t.String()
+            refreshToken: t.String()
           })
         }
       )
