@@ -101,6 +101,49 @@ export const authController = (es: Elysia) => {
           })
         }
       )
+      .post(
+        '/refresh-token',
+        async ({ body }) => {
+          let { refresh_token } = body as {
+            refresh_token: string
+          }
+
+          const privateKey = await Bun.file('./certs/jwtRS256.key', {
+            type: 'utf8'
+          }).text()
+
+          let decoded: any
+          try {
+            decoded = jwt.verify(refresh_token, privateKey)
+          } catch (e) {
+            throw new Error('Invalid token')
+          }
+
+          const tokenPayload: IAuth.TokenPayload = {
+            user_id: decoded.user_id
+          }
+
+          const access_token = jwt.sign(tokenPayload, privateKey, {
+            algorithm: 'RS256',
+            expiresIn: '1h'
+          })
+
+          refresh_token = jwt.sign(tokenPayload, privateKey, {
+            algorithm: 'RS256',
+            expiresIn: '1d'
+          })
+
+          return {
+            access_token,
+            refresh_token
+          }
+        },
+        {
+          body: t.Object({
+            refresh_token: t.String()
+          })
+        }
+      )
   )
 
   return es
