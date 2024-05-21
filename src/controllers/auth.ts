@@ -40,17 +40,17 @@ export const authController = (es: Elysia) => {
             user_id: user.id
           }
 
-          const privateKey = await Bun.file('./certs/jwtRS256.key', {
+          const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {
             type: 'utf8'
           }).text()
 
           const access_token = jwt.sign(tokenPayload, privateKey, {
             algorithm: 'RS256',
-            expiresIn: '1h'
+            expiresIn: process.env.JWT_EXPIRES_IN
           })
           const refresh_token = jwt.sign(tokenPayload, privateKey, {
             algorithm: 'RS256',
-            expiresIn: '1d'
+            expiresIn: process.env.JWT_REFRESH_EXPIRES_IN
           })
 
           return {
@@ -108,7 +108,7 @@ export const authController = (es: Elysia) => {
             refresh_token: string
           }
 
-          const privateKey = await Bun.file('./certs/jwtRS256.key', {
+          const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {
             type: 'utf8'
           }).text()
 

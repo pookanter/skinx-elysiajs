@@ -1,4 +1,16 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: "bun run --watch src/index.ts"
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/usr/src/app'
   mysql:
     image: mysql
     env_file:

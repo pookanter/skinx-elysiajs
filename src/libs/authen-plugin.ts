@@ -25,7 +25,7 @@ export const authenPlugin = (es: Elysia) => {
         if (!token) {
           return (set.status = 'Unauthorized')
         }
-        const privateKey = await Bun.file('./certs/jwtRS256.key', {
+        const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {
           type: 'utf8'
         }).text()
 
