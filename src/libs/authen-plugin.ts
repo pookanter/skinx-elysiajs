@@ -14,15 +14,15 @@ export const authenPlugin = (es: Elysia) => {
       async beforeHandle({ set, headers }) {
         const authorization = headers['authorization']
 
-        console.log('authorization', authorization)
-
         if (!authorization) {
+          console.log('Unauthorized1')
           return (set.status = 'Unauthorized')
         }
 
         const token = authorization.split(' ')[1]
 
         if (!token) {
+          console.log('Unauthorized2')
           return (set.status = 'Unauthorized')
         }
         const privateKey = await Bun.file(process.env.PRIVATE_KEY_PATH, {

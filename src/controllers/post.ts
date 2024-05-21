@@ -2,7 +2,7 @@ import { authenPlugin } from '@libs/authen-plugin'
 import Elysia, { t } from 'elysia'
 import { IPosts } from '@types'
 import { db, Posts, PostTags, Tags, Users } from '@database'
-import { eq } from 'drizzle-orm'
+import { eq, and, inArray, count, sql } from 'drizzle-orm'
 import * as bcrypt from 'bcryptjs'
 import dayjs from 'dayjs'
 
@@ -95,17 +95,85 @@ export const postController = (es: Elysia) => {
           })
         }
       )
-      .post('search', async ({ body }) => {
-        const { title, content } = body as {
-          title: string
-          content: string
-        }
+      .post(
+        'search',
+        async ({ body }) => {
+          const {
+            title,
+            sort,
+            sortBy,
+            tags = [],
+            page,
+            pageSize
+          } = body as IPosts.SearchBody
 
-        return {
-          title,
-          content
+          const postsBase = db
+            .select({
+              id: Posts.id,
+              title: Posts.title,
+              content: Posts.content,
+              postedAt: Posts.postedAt,
+              postedBy: Posts.postedBy,
+              tags: sql`JSON_ARRAYAGG(${Tags.name}) as tags`
+            })
+            .from(Posts)
+            .leftJoin(PostTags, eq(Posts.id, PostTags.postsId))
+            .leftJoin(Tags, eq(Tags.id, PostTags.tagsId))
+            .groupBy(Posts.id)
+
+          if (sort && sortBy) {
+            if (sortBy == 'title') {
+              postsBase.orderBy(Posts.title)
+            }
+
+            if (sortBy == 'postedAt') {
+              postsBase.orderBy(Posts.postedAt)
+            }
+          }
+
+          const andParams = [] as Parameters<typeof and>
+
+          if (title) {
+            andParams.push(eq(Posts.title, title))
+          }
+
+          if (tags.length > 0) {
+            andParams.push(inArray(Tags.name, tags))
+          }
+
+          postsBase.where(and(...andParams))
+
+          const sq = postsBase.as('sq')
+
+          const counts = await db
+            .with(sq)
+            .select({
+              count: count()
+            })
+            .from(sq)
+            .execute()
+
+          const data = await postsBase
+            .limit(pageSize)
+            .offset((page - 1) * pageSize)
+            .execute()
+
+          return {
+            data,
+            count: counts[0].count
+          }
+        },
+        {
+          body: t.Object({
+            title: t.Optional(t.String()),
+            sort: t.Optional(t.String()),
+            sortBy: t.Optional(t.String()),
+            tags: t.Optional(t.Array(t.String())),
+            page: t.Number(),
+            pageSize: t.Number()
+          })
         }
-      })
+      )
   )
 
   return es

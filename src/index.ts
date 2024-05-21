@@ -20,9 +20,11 @@ declare global {
       MYSQL_PORT: string
     }
   }
-}
 
-console.log('process', config)
+  type Concrete<Type> = {
+    [Property in keyof Type]-?: Type[Property]
+  }
+}
 
 const app = new Elysia()
   .use(cors())

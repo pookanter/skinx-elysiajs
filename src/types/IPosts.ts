@@ -10,9 +10,11 @@ export namespace IPosts {
   }
 
   export interface SearchBody {
-    title: string
-    sort: 'asc' | 'desc'
-    sort_by: 'title' | 'content'
-    tags: string[]
+    title?: string
+    sort?: 'asc' | 'desc'
+    sortBy?: 'title' | 'postedAt'
+    tags?: string[]
+    page: number
+    pageSize: number
   }
 }
