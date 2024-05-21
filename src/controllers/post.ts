@@ -2,7 +2,7 @@ import { authenPlugin } from '@libs/authen-plugin'
 import Elysia, { t } from 'elysia'
 import { IPosts } from '@types'
 import { db, Posts, PostTags, Tags, Users } from '@database'
-import { eq, and, inArray, count, sql } from 'drizzle-orm'
+import { eq, and, inArray, count, sql, asc, desc, like } from 'drizzle-orm'
 import * as bcrypt from 'bcryptjs'
 import dayjs from 'dayjs'
 
@@ -123,18 +123,26 @@ export const postController = (es: Elysia) => {
 
           if (sort && sortBy) {
             if (sortBy == 'title') {
-              postsBase.orderBy(Posts.title)
+              if (sort == 'asc') {
+                postsBase.orderBy(asc(Posts.title))
+              } else {
+                postsBase.orderBy(desc(Posts.title))
+              }
             }
 
             if (sortBy == 'postedAt') {
-              postsBase.orderBy(Posts.postedAt)
+              if (sort == 'asc') {
+                postsBase.orderBy(asc(Posts.postedAt))
+              } else {
+                postsBase.orderBy(desc(Posts.postedAt))
+              }
             }
           }
 
           const andParams = [] as Parameters<typeof and>
 
           if (title) {
-            andParams.push(eq(Posts.title, title))
+            andParams.push(like(Posts.title, `%${title}%`))
           }
 
           if (tags.length > 0) {
