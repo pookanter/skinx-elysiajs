@@ -14,6 +14,13 @@ bun run dev
 
 Open http://localhost:3000/ with your browser to see the result.
 
+## Work with Mock Data
+
+Start the api first, then run this in terminal
+```bash
+./scripts/migrate.sh
+```
+
 ## Dockerize
 
 ### Prepare
