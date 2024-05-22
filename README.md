@@ -21,7 +21,7 @@ docker build . -f Dockerfile -t skinx
 docker-compose build
 docker-compose up
 ```
-After docker image is runing. Enter Docker container's shell by run a command below but replace <mycontainer> with docker image name that suffix with "api"
+After docker image is runing. Enter Docker container's shell by run a command below but replace "mycontainer" with docker image name that suffix with "api"
 ```bash
 docker exec -it <mycontainer> bash
 ```
