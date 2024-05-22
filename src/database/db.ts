@@ -6,8 +6,12 @@ import * as schema from './schema'
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+await sleep(1500)
+
 let connection: any
 let retry = 3
+
 while (retry > 0) {
   try {
     console.log('connecting to db...', config)
@@ -17,7 +21,7 @@ while (retry > 0) {
     console.error('error', e)
     console.log('retrying...')
     retry--
-    await sleep(1000)
+    await sleep(3000)
   }
 }
 
