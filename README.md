@@ -15,7 +15,13 @@ bun run dev
 Open http://localhost:3000/ with your browser to see the result.
 
 ## Dockerize
-To start first run docker desktop app first, then run:
+
+### Prepare
+First generate private key and public key follow this [guide](https://gist.github.com/ygotthilf/baa58da5c3dd1f69fae9).
+Then place keys inside folder name certs at root level.
+
+### Build
+To start first run docker desktop app first, then this in ternimar run:
 ```bash
 docker build . -f Dockerfile -t skinx
 docker-compose build
