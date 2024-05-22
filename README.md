@@ -21,7 +21,7 @@ First generate private key and public key follow this [guide](https://gist.githu
 Then make a folder name "certs" at root level and put keys inside it.
 
 ### Build
-To start first run docker desktop app first, then this in ternimar run:
+To start first run docker desktop app first, then run this in ternimar run:
 ```bash
 docker build . -f Dockerfile -t skinx
 docker-compose build
