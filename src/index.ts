@@ -6,18 +6,17 @@ import { config } from './database/config'
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      NODE_ENV: 'development' | 'production'
-      PORT: string
-      HOST: string
-      PRIVATE_KEY_PATH: string
-      PUBLIC_KEY_PATH: string
-      JWT_EXPIRES_IN: string
-      JWT_REFRESH_EXPIRES_IN: string
-      MYSQL_HOST: string
-      MYSQL_DATABASE: string
-      MYSQL_ROOT_USER: string
-      MYSQL_ROOT_PASSWORD: string
-      MYSQL_PORT: string
+      readonly NODE_ENV: 'development' | 'production'
+      readonly PORT: string
+      readonly PRIVATE_KEY_PATH: string
+      readonly PUBLIC_KEY_PATH: string
+      readonly JWT_EXPIRES_IN: string
+      readonly JWT_REFRESH_EXPIRES_IN: string
+      readonly MYSQL_HOST: string
+      readonly MYSQL_DATABASE: string
+      readonly MYSQL_USERNAME: string
+      readonly MYSQL_PASSWORD: string
+      readonly MYSQL_PORT: string
     }
   }
 
@@ -38,10 +37,7 @@ const app = new Elysia()
       }
     }
   })
-  .listen({
-    port: parseInt(process.env.PORT),
-    hostname: process.env.HOST
-  })
+  .listen(parseInt(process.env.PORT))
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`

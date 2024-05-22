@@ -4,16 +4,27 @@ services:
       context: .
       dockerfile: Dockerfile
       target: development
-    command: "bun run --watch src/index.ts"
-    env_file:
-      - .env
+    command: "/bin/sh -c 'bun install && bun run --watch src/index.ts'"
+    environment:
+      PORT: 8080
+      PRIVATE_KEY_PATH: "./certs/jwtRS256.key"
+      PUBLIC_KEY_PATH: "./certs/jwtRS256.key.pub"
+      JWT_EXPIRES_IN: 1h
+      JWT_REFRESH_EXPIRES_IN: 1d
+      MYSQL_HOST: "mysql"
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: skinx
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: 123456
     ports:
       - "8080:8080"
     volumes:
       - .:/usr/src/app'
   mysql:
     image: mysql
-    env_file:
-      - .env
+    environment:
+      MYSQL_DATABASE: skinx
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: 123456
     ports: 
       - "3306:3306"
