@@ -14,7 +14,7 @@ bun run dev
 
 Open http://localhost:3000/ with your browser to see the result.
 
-## Dockerie
+## Dockerize
 To start first run docker desktop app first, then run:
 ```bash
 docker build . -f Dockerfile -t skinx
